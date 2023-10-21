@@ -44,12 +44,9 @@ class GunsDataset(torch.utils.data.Dataset):
         self.transform = torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.crop_size = crop_size
         features, self.labels = read_dataset(os.path.join(abs_path, dir))
-        self.features = [self.normalize_image(feature) for feature in self.filter(features)]
+        self.features = [self.transform(feature) for feature in self.filter(features)]
 
         print('read ' + str(len(self.labels)) + ' examples')
-
-    def normalize_image(self, img):
-        return self.transform(img.float() / 255.0)
 
     def filter(self, imgs):
         return [img for img in imgs if (
