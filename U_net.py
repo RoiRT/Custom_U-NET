@@ -66,21 +66,6 @@ class TransposeBlock(nn.Module):
         Y += X
         return F.relu(Y)
 
-
-class Top(nn.Module):
-    def __init__(self, num_classes):
-        super().__init__()
-        self.net = nn.Sequential(
-            nn.LazyConvTranspose2d(num_classes, 7, stride=4, padding=3, output_padding=3, bias=False),
-            nn.LazyBatchNorm2d(),
-            nn.ReLU(),
-        )
-
-    def forward(self, X):
-        return self.net(X)
-
-
-
 class ResNet(nn.Module):
     def __init__(self, num_channels, num_classes=2):
         super().__init__()
@@ -111,18 +96,20 @@ class ResNet(nn.Module):
     def forward(self, X):
         return self.net(X)
 
-def create_deco():
+def create_deco(verbose=True):
     input_shape = (512, 32, 32)
     resnet_dec = ResNet((512, 256, 256, 128, 128, 64, 64, 64), 2)
-    summary(resnet_dec, input_shape, device='cpu')
-    print('Input shape = '+str(input_shape))
+    if verbose:
+        summary(resnet_dec, input_shape, device='cpu')
+        print('Input shape = '+str(input_shape))
     return resnet_dec
 
-def create_unet():
+def create_unet(verbose=True):
     input_shape = (3, 512, 512)
     net = nn.Sequential(*resnet_cod_layers)
     resnet_dec = ResNet((512, 256, 256, 128, 128, 64, 64, 64), 2)
     net.add_module('deco', resnet_dec)
-    print(summary(net, input_shape, device='cpu'))
-    print('Input shape = '+str(input_shape))
+    if verbose:
+        summary(net, input_shape, device='cpu')
+        print('Input shape = '+str(input_shape))
     return net
