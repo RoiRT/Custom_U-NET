@@ -7,6 +7,8 @@ import torchvision.transforms as transforms
 from PIL import Image
 import json
 
+'''Tools.py is made for COCO Segmentation format'''
+
 abs_path = 'C:\\Proxectos\\Custom_U-NET\\g.v2i.coco-segmentation'
 
 def read_dataset(path, n=-1):
